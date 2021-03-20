@@ -2,15 +2,42 @@ import './App.css';
 import {useState} from 'react';
 import {Link, Route, Switch, useParams} from 'react-router-dom';
 
+var data = require('./contacts.json');
+
 function App() {
-  var data = require('./contacts.json');
   const [query, setQuery] = useState("");
+  const [sortMode, setSortMode] = useState("");
+  const [listDirection, setListDirection] = useState(true);
 
   var filterList = data.filter( (item) => {
     var lowerCaseQuery = query.toLowerCase();
     return item.name.toLowerCase().includes(lowerCaseQuery) || 
             item.username.toLowerCase().includes(lowerCaseQuery)
   });
+
+  function handleSort(mode) {
+    if (sortMode === mode) {
+      setListDirection(!listDirection);
+    } else {
+      setSortMode(mode)
+    }
+  }
+
+  function sortBy(field, reverse) {
+    var key = function(x) { 
+      return x[field]; 
+    };
+    return function(a, b) {
+      a = key(a);
+      b = key(b);
+      if (reverse) {
+        return ((b > a) - (a > b));
+      }
+      return ((a > b) - (b > a));
+    }
+  }
+
+  filterList.sort(sortBy(sortMode, listDirection));
 
   var contacts = []
   for (var i = 0; i < filterList.length; i++) {
@@ -22,19 +49,36 @@ function App() {
       </Link>
     );
   }
-
   return (
     <div className="flex-container">
       <section className="border">
       </section>
       <section className="aside">
         <h2>All contacts</h2>
-        <div className="search">
-          <input value={query} 
-                 placeholder="Search name or username" 
-                 onChange={e => setQuery(e.target.value)}
-          />
+          <div className="search">
+            <input value={query} 
+                  placeholder="Search name or username" 
+                  onChange={e => setQuery(e.target.value)}
+            />
+          <div className="sort-dropdown">
+            <div className="sort-button">Sort</div>
+            <div className="sort-dropdown-content">
+              <div className="sort-field" onClick={() => {handleSort("id")}}>
+                ID {(sortMode === "id") && "*"}
+              </div>
+              <div className="sort-field" onClick={() => {handleSort("name")}}>
+                Name {(sortMode === "name") && "*"}
+              </div>
+              <div className="sort-field" onClick={() => {handleSort("username")}}>
+                Username {(sortMode === "username") && "*"}
+              </div>
+              <div className="sort-field" onClick={() => {setListDirection(!listDirection)}}>
+                {(listDirection) ? <i className="arrow up"/> : <i className="arrow down"/> }
+              </div>
+            </div>
+          </div>
         </div>
+        <br/>
         {contacts}
       </section>
       <section className="main">
@@ -50,10 +94,9 @@ function App() {
 
 function Contact() {
   const match = useParams();
-  var data = require('./contacts.json');
   var contact = null;
   for (var i = 0; i < data.length; i++) {
-    if (data[i].id == match.id) {
+    if (data[i].id === parseInt(match.id)) {
       contact = data[i];
     }
   }
