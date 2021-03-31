@@ -1,17 +1,16 @@
 import axios from "axios";
 
-const API = "http://127.0.0.1:8000/api/";
+const API = "http://127.0.0.1:9000/api/";
 
-function getContactList(sortMode, listDirection) {
+function getContactList(query, sortMode, listDirection) {
   return axios.get(API + "contacts", { 
     params: {
-      sorting: sortMode,
-      direction: listDirection
+      query: query,
+      sortMode: sortMode
     }
   }).then(
     (response) => {
-      console.log(response)
-      return response
+      return (listDirection) ? response.data : response.data.reverse()
     },
     (error) => {
       console.error(error.response)
@@ -20,7 +19,22 @@ function getContactList(sortMode, listDirection) {
   );
 }
 
-export default {
-  getContactList
+function getContactByID(id) {
+  return axios.get(API + "contacts/" + id).then(
+    (response) => {
+      return response.data
+    },
+    (error) => {
+      console.error(error.response)
+      return null
+    }
+  )
 }
+
+const Services = {
+  getContactList,
+  getContactByID
+}
+
+export default Services;
 
