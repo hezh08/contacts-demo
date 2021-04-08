@@ -10,11 +10,11 @@ function getContactList(query, sortMode, listDirection) {
     }
   }).then(
     (response) => {
-      return (listDirection) ? response.data : response.data.reverse()
+      return (listDirection) ? response.data : response.data.reverse();
     },
     (error) => {
-      console.error(error.response)
-      return []
+      console.error(error);
+      return null;
     }
   );
 }
@@ -22,11 +22,11 @@ function getContactList(query, sortMode, listDirection) {
 function getContactByID(id) {
   return axios.get(API + "contacts/" + id).then(
     (response) => {
-      return response.data
+      return response.data;
     },
     (error) => {
-      console.error(error.response)
-      return null
+      console.error(error);
+      return null;
     }
   )
 }

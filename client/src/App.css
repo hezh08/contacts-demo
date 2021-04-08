@@ -201,3 +201,30 @@ h4:hover {
 .close:after {
   transform: rotate(-45deg);
 }
+.suggested-text, .not-found {
+  padding-top: 40vh;
+  align-content: center;
+  text-align: center;
+  color: gray;
+}
+
+@media screen and (max-width: 700px) {
+  .suggested-text {
+    display: none;
+  }
+  .not-found {
+    padding-top: 0;
+    margin-top: -60vh;
+  }
+}
+
+.error-alert {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  background: coral;
+  color: white;
+  font-size: 15px;
+}
